@@ -37,7 +37,6 @@ role_verification = {"team_member" : tm_verify, "board_member" : bm_verify, "Alu
 class new_role(commands.Cog):
     def __init__(self,client):
         self.client = client
-
     @commands.command()
     async def new_role(self, ctx, r: discord.Role):
         msg_verify = "null"
@@ -47,16 +46,9 @@ class new_role(commands.Cog):
         m:discord.Member = ctx.message.author
         id = m.id
         user_dm = self.client.get_user(id)
-        flag = 1
         for y in role_ids:
             if r.name == y:
                 role = m.guild.get_role(role_id = role_ids.get(y))
-                flag = 0
-        if flag == 1:
-            a = await user_dm.send(f'role not found, please try again')
-            await ctx.channel.purge(limit = 1)
-            await a.delete(delay = 10.0)
-            return
         f_new_role = 1
         for a in m.roles:
             #print(f'looping')
@@ -131,6 +123,11 @@ class new_role(commands.Cog):
                 return
             else:
                 return
-
+    @new_role.error
+    async def new_role_error(self,ctx,error):
+        if isinstance(error, commands.BadArgument):
+            a = await ctx.channel.send(f'role not found, please try again')
+            await ctx.message.delete(delay = 10.0)
+            await a.delete(delay = 10.0)
 def setup(client):
     client.add_cog(new_role(client))

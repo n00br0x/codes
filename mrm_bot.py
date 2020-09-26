@@ -19,6 +19,17 @@ bm_verify = 749663323691155526
 eve = 745983898839679036
 alm_verify = 752403301705842759
 @bot.event
+async def on_command_error(ctx,error):
+    if isinstance(error, commands.CommandNotFound):
+        a = await ctx.channel.send(f'command not found')
+        await a.delete(delay = 10.0)
+        await ctx.message.delete(delay = 10.0)
+    else:
+        a = await ctx.channel.send(f'error')
+        await a.delete(delay = 10.0)
+        await ctx.message.delete(delay = 10.0)
+
+@bot.event
 ## shows that bot is ready
 async def on_ready():
     print ('Bot is ready')
