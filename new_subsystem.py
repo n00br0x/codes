@@ -47,17 +47,9 @@ class new_subsystem(commands.Cog):
         m:discord.Member = ctx.message.author
         id = m.id
         user_dm = self.client.get_user(id)
-        flag = 1
         for z in subsystem:
             if s.name == z:
                 role = m.guild.get_role(role_id = subsystem.get(z))
-                flag = 0
-        if flag == 1:
-            a = await user_dm.send(f'subsystem not found, please try again')
-            await a.delete(delay = 10.0)
-            await ctx.channel.purge(limit = 1)
-            return
-
         flag_new_sub = 1
         for sub in m.roles:
             if s.name == sub.name or sub.name in subsystem:
@@ -108,5 +100,11 @@ class new_subsystem(commands.Cog):
                     return
                 else:
                     return
+    @new_subsystem.error
+    async def subsystem_error(self,ctx,error):
+        if isinstance(error, commands.BadArgument):
+            a = await ctx.channel.send(f'subsystem not found, please try again')
+            await ctx.message.delete(delay = 10.0)
+            await a.delete(delay = 10.0)
 def setup(client):
     client.add_cog(new_subsystem(client))
